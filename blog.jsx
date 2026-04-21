@@ -392,6 +392,7 @@ function TopBar({route, setRoute, editMode, togglePanel}){
   const path = route.name === 'post' ? '/post/' + route.id
              : route.name === 'archive' ? '/archive'
              : route.name === 'about' ? '/about'
+             : route.name === 'minesweeper' ? '/minesweeper'
              : '/';
   return (
     <div className="topbar">
@@ -1029,6 +1030,9 @@ function Minesweeper({setRoute}){
         </div>
 
         <div style={{
+          maxWidth:'100%', overflowX:'auto', WebkitOverflowScrolling:'touch',
+        }}>
+        <div style={{
           display:'inline-block', padding:8,
           border:'1px solid var(--rule-strong)', borderRadius:4,
           background:'var(--paper, #f5f2ec)',
@@ -1071,6 +1075,7 @@ function Minesweeper({setRoute}){
               })}
             </div>
           ))}
+        </div>
         </div>
 
         <div style={{
