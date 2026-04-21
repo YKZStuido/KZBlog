@@ -22,12 +22,11 @@ python serve.py 3000   # 自定义端口
 
 仓库已经配置好 GitHub Actions 自动部署工作流（见 `.github/workflows/pages.yml`）。
 
-### 首次启用（一次性）
+### 首次启用
 
-1. 推送包含工作流文件的代码到 `main` 分支
-2. 打开仓库 **Settings → Pages**
-3. 在 **Build and deployment → Source** 选择 **GitHub Actions**
-4. 回到 **Actions** 页面等待 `Deploy to GitHub Pages` 工作流跑完
+工作流里的 `configure-pages` 已开启 `enablement: true`，首次推送到 `main` 会自动为仓库启用 GitHub Pages，无需手动到 Settings 里操作。
+
+若仓库禁止了 Actions 自动启用 Pages，则退回手动方式：**Settings → Pages → Build and deployment → Source → GitHub Actions**，然后重跑工作流。
 
 ### 日常发布
 
