@@ -341,18 +341,6 @@ function App(){
     });
   };
 
-  // reading progress
-  useEffect(()=>{
-    const on = ()=>{
-      const h = document.documentElement;
-      const p = h.scrollTop / Math.max(1, h.scrollHeight - h.clientHeight);
-      const bar = document.getElementById('readbar');
-      if (bar) bar.style.width = Math.min(100, p*100) + '%';
-    };
-    window.addEventListener('scroll', on, { passive: true });
-    return ()=> window.removeEventListener('scroll', on);
-  }, [route]);
-
   if (loadError){
     return (
       <div style={{padding:40, fontFamily:'var(--mono)', color:'var(--ink-soft)', maxWidth:620}}>
