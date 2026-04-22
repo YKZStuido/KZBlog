@@ -96,7 +96,7 @@
   .tb-path{ color: var(--ink-soft); }
   .tb-path b{ color: var(--ink); font-weight: 500; }
   .tb-right{ margin-left:auto; display:flex; gap: 18px; align-items:center; color: var(--ink-soft);}
-  .tb-right a{ cursor:pointer; }
+  .tb-right a{ cursor:pointer; white-space: nowrap; }
   .tb-right a:hover{ color: var(--ink); }
   .tb-right a.active{ color: var(--ink); border-bottom: 1px solid var(--ink); padding-bottom: 2px; }
   .tb-k{ border:1px solid var(--rule-strong); padding: 2px 6px; border-radius: 4px; color: var(--ink-soft);}
@@ -806,6 +806,9 @@
     .pagefoot{ padding: 20px 22px; flex-direction:column; gap:8px;}
     .subscribe{ grid-template-columns: 1fr;}
     .subscribe input{ min-width: 0; flex: 1;}
+    .tb-dots{ display: none; }
+    .tb-path{ display: none; }
+    .tb-right{ gap: 14px; }
   }
 </style>
 </head>
