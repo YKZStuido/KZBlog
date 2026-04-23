@@ -36,8 +36,20 @@ pinned: true      # 可选，置顶显示在归档页
 
 ## 架构
 
-- 单文件 React 应用（`blog.jsx`）——无外部状态库或路由器
-- 哈希路由：`#/`、`#/archive`、`#/about`、`#/post/{id}`
-- 自定义 Markdown 解析器内置于 `blog.jsx`——不要替换为第三方库
+- 浏览器内 Babel 即时编译的 React 应用——无外部状态库或路由器
+- 哈希路由：`#/`、`#/archive`、`#/about`、`#/post/{id}`、`#/minesweeper`
+- 自定义 Markdown 解析器位于 `src/markdown.jsx`——不要替换为第三方库
 - 站点配置和文章列表存放于 `archive/index.json`
 - 部署目标：个人/VPS 服务器
+
+### 源码组织
+
+`index.html` 顺序加载下列脚本，共享同一全局作用域：
+
+1. `src/markdown.jsx` — 解析/渲染原语（loader、highlight、frontmatter、block、`Inline`、`CodeBlock`）。React hooks 在此处集中解构一次，后续文件直接使用 `useState` 等名字。
+2. `src/chrome.jsx` — 顶栏、页脚、Tweak 面板
+3. `src/pages.jsx` — `Home` / `Post` / `Archive` / `About`
+4. `src/minesweeper.jsx` — 扫雷游戏
+5. `blog.jsx` — `App` 根组件 + 路由 + 数据加载 + `ReactDOM.createRoot`
+
+新增文件时请按依赖顺序追加 `<script type="text/babel">`，并避免在多个文件里重复 `const { useState, ... } = React;`（会触发重复声明错误）。
