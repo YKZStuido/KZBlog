@@ -61,5 +61,12 @@
   },
   "posts": [
     "p002", "p001"
+  ],
+  "collections": [
+    {
+      "id": "oneplus",
+      "title": "一加玩机系列",
+      "desc": "一加手机刷机、Root、系统修改全攻略"
+    }
   ]
 }

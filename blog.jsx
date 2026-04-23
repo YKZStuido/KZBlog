@@ -281,10 +281,13 @@ function App(){
           home: idx.home,
           archivePage: idx.archivePage,
           aboutPage: { ...idx.aboutPage, body: aboutBody },
+          collections: idx.collections || [],
           posts: posts.map(p => ({
             id: p.id, num: p.num, title: p.title, excerpt: p.excerpt,
             date: p.date, read: p.read, tags: p.tags,
             featured: !!p.featured, pinned: !!p.pinned,
+            collection: p.collection || null,
+            collection_n: p.collection_n || null,
           })),
         });
       } catch (e){
@@ -357,14 +360,14 @@ function App(){
     return <div style={{padding:40, fontFamily:'var(--mono)', color:'var(--ink-faint)'}}>加载中…</div>;
   }
 
-  const { site, home, archivePage, aboutPage, posts } = data;
+  const { site, home, archivePage, aboutPage, posts, collections } = data;
 
   return (
     <>
       <TopBar route={route} setRoute={setRoute} editMode={editMode} togglePanel={()=>setPanelOpen(o=>!o)} />
-      {route.name === 'home'    && <Home posts={posts} site={site} content={home} setRoute={setRoute} />}
-      {route.name === 'post'    && <Post posts={posts} site={site} post={postCache[route.id]} setRoute={setRoute} showToc={tweaks.showToc} />}
-      {route.name === 'archive' && <Archive posts={posts} content={archivePage} setRoute={setRoute} />}
+      {route.name === 'home'    && <Home posts={posts} site={site} content={home} setRoute={setRoute} collections={collections} />}
+      {route.name === 'post'    && <Post posts={posts} site={site} post={postCache[route.id]} setRoute={setRoute} showToc={tweaks.showToc} collections={collections} />}
+      {route.name === 'archive' && <Archive posts={posts} content={archivePage} setRoute={setRoute} collections={collections} />}
       {route.name === 'about'   && <About content={aboutPage} />}
       {route.name === 'minesweeper' && <Minesweeper setRoute={setRoute} />}
       <PageFoot site={site} setRoute={setRoute} />
@@ -399,8 +402,9 @@ function TopBar({route, setRoute, editMode, togglePanel}){
 }
 
 // ------- home -------
-function Home({posts, site, content, setRoute}){
+function Home({posts, site, content, setRoute, collections}){
   const [active, setActive] = useState('全部');
+  const [activeCollection, setActiveCollection] = useState(null);
   const [q, setQ] = useState('');
 
   const allTags = useMemo(()=> [...new Set(posts.flatMap(p => p.tags))], [posts]);
@@ -409,10 +413,11 @@ function Home({posts, site, content, setRoute}){
   const filtered = useMemo(()=>{
     return posts.filter(p=>{
       const tagOk = active === '全部' || p.tags.includes(active);
+      const colOk = !activeCollection || p.collection === activeCollection;
       const qOk = !q || (p.title+p.excerpt+p.tags.join(' ')).toLowerCase().includes(q.toLowerCase());
-      return tagOk && qOk;
+      return tagOk && colOk && qOk;
     });
-  }, [active, q, posts]);
+  }, [active, activeCollection, q, posts]);
 
   const featured = posts.find(p=>p.featured);
   const statValue = (s) => {
@@ -485,6 +490,24 @@ function Home({posts, site, content, setRoute}){
               ))}
             </div>
 
+            {collections && collections.length > 0 && (
+              <>
+                <h4>Collections</h4>
+                <div className="tag-list">
+                  {collections.map(c => {
+                    const count = posts.filter(p => p.collection === c.id).length;
+                    return (
+                      <button key={c.id}
+                        className={'tag' + (activeCollection === c.id ? ' on' : '')}
+                        onClick={() => setActiveCollection(activeCollection === c.id ? null : c.id)}>
+                        {c.title} · {count}
+                      </button>
+                    );
+                  })}
+                </div>
+              </>
+            )}
+
             <h4>Sections</h4>
             <div style={{lineHeight:1.9}}>
               {content.sidebarSections.map(s=>(
@@ -532,7 +555,7 @@ function Home({posts, site, content, setRoute}){
 }
 
 // ------- post page -------
-function Post({posts, site, post, setRoute, showToc}){
+function Post({posts, site, post, setRoute, showToc, collections}){
   const [activeSec, setActiveSec] = useState(undefined);
   const [progress, setProgress] = useState(0);
 
@@ -555,6 +578,16 @@ function Post({posts, site, post, setRoute, showToc}){
     on();
     return ()=> window.removeEventListener('scroll', on);
   }, [post?.id]);
+
+  const seriesInfo = useMemo(()=>{
+    if (!post?.collection || !collections) return null;
+    const col = collections.find(c => c.id === post.collection);
+    if (!col) return null;
+    const seriesPosts = posts
+      .filter(p => p.collection === post.collection)
+      .sort((a, b) => (a.collection_n || 0) - (b.collection_n || 0));
+    return { ...col, posts: seriesPosts };
+  }, [post?.id, post?.collection, collections, posts]);
 
   if (!post){
     return (
@@ -608,6 +641,26 @@ function Post({posts, site, post, setRoute, showToc}){
           <span>{wordCount} 字</span>
         </div>
 
+        {seriesInfo && (
+          <div className="series-card">
+            <div className="series-head">
+              <span>系列合集</span>
+              <b>{seriesInfo.title}</b>
+              <span className="series-count">共 {seriesInfo.posts.length} 篇</span>
+            </div>
+            {seriesInfo.posts.map((p, i) => (
+              <div key={p.id}
+                className={'series-item' + (p.id === post.id ? ' current' : '')}
+                onClick={p.id !== post.id ? () => setRoute({name:'post', id: p.id}) : undefined}
+                style={{cursor: p.id !== post.id ? 'pointer' : 'default'}}>
+                <span className="series-n">{p.collection_n || (i + 1)}</span>
+                <span className="series-t">{p.title}</span>
+                {p.id === post.id && <span className="series-cur">当前</span>}
+              </div>
+            ))}
+          </div>
+        )}
+
         {post.lede && <p className="lede"><Inline text={post.lede}/></p>}
         {body.map((b,i)=>renderBlock(b, i))}
 
@@ -635,7 +688,7 @@ function Post({posts, site, post, setRoute, showToc}){
 }
 
 // ------- archive -------
-function Archive({posts, content, setRoute}){
+function Archive({posts, content, setRoute, collections}){
   const byYear = useMemo(()=>{
     const m = {};
     for (const p of posts){
@@ -661,13 +714,19 @@ function Archive({posts, content, setRoute}){
             <h2>{y}</h2>
             <span>{byYear[y].length} 篇</span>
           </div>
-          {byYear[y].map(p=>(
-            <div key={p.id} className="archive-row" onClick={()=>setRoute({name:'post', id: p.id})}>
-              <div className="ar-date">{p.date.slice(5)}</div>
-              <div className="ar-title">{p.title}</div>
-              <div className="ar-tags">{p.tags.join(' / ')}</div>
-            </div>
-          ))}
+          {byYear[y].map(p=>{
+            const col = p.collection ? (collections||[]).find(c=>c.id===p.collection) : null;
+            return (
+              <div key={p.id} className="archive-row" onClick={()=>setRoute({name:'post', id: p.id})}>
+                <div className="ar-date">{p.date.slice(5)}</div>
+                <div className="ar-title">{p.title}</div>
+                <div className="ar-tags">
+                  {col && <span className="ar-series">{col.title} · </span>}
+                  {p.tags.join(' / ')}
+                </div>
+              </div>
+            );
+          })}
         </section>
       ))}
     </main>
