@@ -224,8 +224,9 @@ function renderBlock(b, i){
     case 'code': {
       const lines = b.text.split('\n');
       return (
-        <pre key={i} data-lang={b.lang || ''}>
-          <code>
+        <div key={i} className="code-block" data-lang={b.lang || ''}>
+          <pre>
+            <code>
             {lines.map((ln,j)=>(
               <div key={j}>
                 <span className="linum">{j+1}</span>
@@ -234,8 +235,9 @@ function renderBlock(b, i){
                   : (ln || '\u00A0')}
               </div>
             ))}
-          </code>
-        </pre>
+            </code>
+          </pre>
+        </div>
       );
     }
     default: return null;

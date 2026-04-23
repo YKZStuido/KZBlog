@@ -394,6 +394,21 @@
     border-radius: 3px;
     border: 1px solid var(--rule);
   }
+  .article .code-block{
+    position: relative;
+    margin: 18px 0;
+  }
+  .article .code-block::before{
+    content: attr(data-lang);
+    position: absolute;
+    top: 8px; right: 12px;
+    font-size: 10.5px;
+    color: var(--ink-faint);
+    letter-spacing: .15em;
+    text-transform: uppercase;
+    pointer-events: none;
+    z-index: 1;
+  }
   .article pre{
     font-family: var(--mono);
     font-size: 13px;
@@ -404,16 +419,9 @@
     overflow-x: auto;
     line-height: 1.55;
     margin: 18px 0;
-    position: relative;
   }
-  .article pre::before{
-    content: attr(data-lang);
-    position: absolute;
-    top: 8px; right: 12px;
-    font-size: 10.5px;
-    color: var(--ink-faint);
-    letter-spacing: .15em;
-    text-transform: uppercase;
+  .article .code-block pre{
+    margin: 0;
   }
   .article pre code{
     background: transparent;
