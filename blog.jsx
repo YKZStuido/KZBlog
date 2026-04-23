@@ -748,7 +748,11 @@ function About({content}){
         </div>
 
         <aside className="about-card">
-          <div className="avatar">{content.card.avatar}</div>
+          <div className="avatar">
+            {/\.(jpg|jpeg|png|webp|gif|avif|svg)$/i.test(content.card.avatar)
+              ? <img src={content.card.avatar} alt="avatar" />
+              : content.card.avatar}
+          </div>
           <dl>
             {content.card.rows.map(([dt, dd],i)=>(
               <Fragment key={i}>
