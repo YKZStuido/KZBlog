@@ -21,15 +21,20 @@ const _KW = {
   go:     'func|package|import|return|if|else|for|range|switch|case|break|continue|var|const|type|struct|interface|map|chan|go|defer|select|true|false|nil',
   shell:  'if|then|else|fi|for|do|done|while|case|esac|function|return|export|echo|local',
   bash:   'if|then|else|fi|for|do|done|while|case|esac|function|return|export|echo|local',
+  cpp:    'int|long|short|char|double|float|void|bool|signed|unsigned|auto|const|constexpr|static|extern|inline|return|if|else|for|while|do|switch|case|break|continue|default|goto|sizeof|typedef|struct|class|enum|union|public|private|protected|virtual|override|final|namespace|using|template|typename|new|delete|this|nullptr|true|false|operator|friend|mutable|try|catch|throw|explicit|decltype|noexcept|static_cast|dynamic_cast|reinterpret_cast|const_cast|include|define|pragma|ifdef|ifndef|endif|undef',
+  c:      'int|long|short|char|double|float|void|const|static|extern|inline|return|if|else|for|while|do|switch|case|break|continue|default|goto|sizeof|typedef|struct|enum|union|signed|unsigned|volatile|register|include|define|pragma|ifdef|ifndef|endif',
 };
 function highlight(text, lang){
   const kw = _KW[lang] || '';
   const commentPat = (lang==='python'||lang==='shell'||lang==='bash')
     ? '#[^\\n]*' : '//[^\\n]*|\\/\\*[\\s\\S]*?\\*\\/';
-  const parts = [`(${commentPat})`,
-    `("(?:[^"\\\\]|\\\\.)*"|'(?:[^'\\\\]|\\\\.)*'|\`(?:[^\`\\\\]|\\\\.)*\`)`];
-  if (kw) parts.push(`\\b(${kw})\\b`);
-  parts.push(`(\\b[A-Za-z_]\\w*(?=\\s*\\())`, `(\\b\\d+(?:\\.\\d+)?\\b)`);
+  const parts = [
+    `(${commentPat})`,
+    `("(?:[^"\\\\]|\\\\.)*"|'(?:[^'\\\\]|\\\\.)*'|\`(?:[^\`\\\\]|\\\\.)*\`)`,
+    kw ? `\\b(${kw})\\b` : '(\\b\\B)',
+    `(\\b[A-Za-z_]\\w*(?=\\s*\\())`,
+    `(\\b\\d+(?:\\.\\d+)?\\b)`,
+  ];
   const re = new RegExp(parts.join('|'), 'g');
   let last = 0, out = '';
   text.replace(re, (m, c, s, k, f, n, offset) => {
