@@ -45,7 +45,7 @@
     "kicker": "/about",
     "title": "关于我",
     "card": {
-      "avatar": "亚",
+      "avatar": "./avatar.jpg",
       "rows": [
         ["NAME", "亚柯洲"],
         ["AGE", "13"],

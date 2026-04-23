@@ -598,6 +598,10 @@
     display:flex; align-items:center; justify-content:center;
     font-family: var(--title-font); font-size: 30px; font-weight: 500;
     margin-bottom: 14px;
+    overflow: hidden;
+  }
+  .about-card .avatar img{
+    width: 100%; height: 100%; object-fit: cover; display: block;
   }
   .about-card dl{ margin: 0; display:grid; grid-template-columns: 80px 1fr; gap: 4px 12px;}
   .about-card dt{ color: var(--ink-faint);}
