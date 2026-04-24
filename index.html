@@ -108,6 +108,52 @@
   .tb-right a.active{ color: var(--ink); border-bottom: 1px solid var(--ink); padding-bottom: 2px; }
   .tb-k{ border:1px solid var(--rule-strong); padding: 2px 6px; border-radius: 4px; color: var(--ink-soft);}
 
+  /* theme toggle button */
+  .theme-toggle{
+    all: unset;
+    cursor: pointer;
+    width: 26px; height: 26px;
+    display: inline-flex; align-items:center; justify-content:center;
+    color: var(--ink-soft);
+    border-radius: 50%;
+    position: relative;
+    flex-shrink: 0;
+    transition: background .2s ease, color .2s ease;
+  }
+  .theme-toggle:hover{
+    color: var(--ink);
+    background: color-mix(in srgb, var(--ink) 10%, transparent);
+  }
+  .theme-toggle:active{ transform: scale(.92); }
+  .theme-icon-wrap{
+    position: relative;
+    width: 16px; height: 16px;
+    display: block;
+  }
+  .theme-icon{
+    position: absolute; inset: 0;
+    transform-origin: center;
+    transition: opacity .35s ease, transform .5s cubic-bezier(.4,0,.2,1);
+  }
+  .theme-icon.sun{  opacity: 1; transform: rotate(0)    scale(1);  }
+  .theme-icon.moon{ opacity: 0; transform: rotate(-90deg) scale(.35); }
+  body[data-theme="charcoal"] .theme-icon.sun,
+  body[data-theme="terminal"] .theme-icon.sun{
+    opacity: 0; transform: rotate(90deg) scale(.35);
+  }
+  body[data-theme="charcoal"] .theme-icon.moon,
+  body[data-theme="terminal"] .theme-icon.moon{
+    opacity: 1; transform: rotate(0) scale(1);
+  }
+
+  /* 切换主题瞬间的全局平滑过渡（仅在切换窗口启用，避免污染其它 transition） */
+  body.theme-transition,
+  body.theme-transition *,
+  body.theme-transition *::before,
+  body.theme-transition *::after{
+    transition: background-color .4s ease, color .4s ease, border-color .4s ease, fill .4s ease, stroke .4s ease !important;
+  }
+
   /* header mast */
   .mast{
     max-width: var(--maxw);
@@ -522,18 +568,32 @@
     text-align:center; margin-top: -14px; margin-bottom: 24px;
   }
 
+  /* post layout: [balance] | article | [toc 240px] */
+  .post-wrap.with-toc{
+    display: grid;
+    grid-template-columns: 1fr var(--colw) 240px;
+    align-items: start;
+  }
+  .post-wrap.with-toc > .article{
+    grid-column: 2;
+    margin: 0;
+  }
+  .post-wrap.with-toc > .toc{
+    grid-column: 3;
+    margin-left: 40px;
+  }
+
   /* TOC rail */
   .toc{
-    position: fixed;
-    top: 120px;
-    right: max(20px, calc( (100vw - var(--colw)) / 2 - 240px ));
-    width: 200px;
+    position: sticky;
+    top: 70px;
+    align-self: start;
     font-family: var(--mono);
     font-size: 11.5px;
     color: var(--ink-faint);
     border-left: 1px solid var(--rule);
     padding: 6px 0 6px 14px;
-    max-height: 60vh;
+    max-height: calc(100vh - 90px);
     overflow-y: auto;
   }
   .toc h5{
@@ -560,7 +620,11 @@
     margin-top: 14px; padding-top: 10px; border-top: 1px solid var(--rule);
     color: var(--ink-faint);
   }
-  @media (max-width: 1200px){ .toc{ display:none; } }
+  @media (max-width: 1280px){
+    .toc{ display:none; }
+    .post-wrap.with-toc{ display: block; }
+    .post-wrap.with-toc > .article{ margin: 0 auto; }
+  }
 
   /* article footer */
   .article-end{
@@ -925,6 +989,22 @@
 </style>
 </head>
 <body data-theme="paper">
+  <script>
+    // 初始主题：localStorage 优先，否则跟随系统。在 React 挂载前同步执行以避免闪烁
+    (function(){
+      try {
+        var saved = localStorage.getItem('color-mode');
+        var mode = (saved === 'light' || saved === 'dark') ? saved : null;
+        var theme;
+        if (mode === 'light') theme = 'paper';
+        else if (mode === 'dark') theme = 'charcoal';
+        else theme = (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) ? 'charcoal' : 'paper';
+        document.body.dataset.theme = theme;
+        window.__COLOR_MODE__ = mode;
+        window.__INITIAL_THEME__ = theme;
+      } catch(e){}
+    })();
+  </script>
   <div id="root"></div>
 
   <!-- tweakable defaults -->

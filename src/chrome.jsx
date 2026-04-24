@@ -1,6 +1,34 @@
 // 亚の博客 — 顶栏、页脚、右下角 Tweak 面板
 
-function TopBar({route, setRoute, editMode, togglePanel}){
+function ThemeToggle({theme, onToggle}){
+  const isDark = theme === 'charcoal' || theme === 'terminal';
+  const label = isDark ? '切换到白天模式' : '切换到夜间模式';
+  return (
+    <button className="theme-toggle" onClick={onToggle} aria-label={label} title={label}>
+      <span className="theme-icon-wrap">
+        {/* 太阳：白天显示 */}
+        <svg className="theme-icon sun" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+          <circle cx="12" cy="12" r="4" fill="currentColor" stroke="none"/>
+          <line x1="12" y1="2.5" x2="12" y2="5"/>
+          <line x1="12" y1="19" x2="12" y2="21.5"/>
+          <line x1="2.5" y1="12" x2="5" y2="12"/>
+          <line x1="19" y1="12" x2="21.5" y2="12"/>
+          <line x1="4.93" y1="4.93" x2="6.34" y2="6.34"/>
+          <line x1="17.66" y1="17.66" x2="19.07" y2="19.07"/>
+          <line x1="4.93" y1="19.07" x2="6.34" y2="17.66"/>
+          <line x1="17.66" y1="6.34" x2="19.07" y2="4.93"/>
+        </svg>
+        {/* 月亮：夜间显示 */}
+        <svg className="theme-icon moon" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M20 14.5A9 9 0 1 1 9.5 4a7 7 0 0 0 10.5 10.5z"/>
+        </svg>
+      </span>
+    </button>
+  );
+}
+
+function TopBar({route, setRoute, editMode, togglePanel, theme, toggleColorMode}){
   const path = route.name === 'post' ? '/post/' + route.id
              : route.name === 'archive' ? '/archive'
              : route.name === 'about' ? '/about'
@@ -11,6 +39,7 @@ function TopBar({route, setRoute, editMode, togglePanel}){
       <div className="tb-dots"><i/><i/><i/></div>
       <span className="tb-path">~/blog<b>{path}</b></span>
       <div className="tb-right">
+        <ThemeToggle theme={theme} onToggle={toggleColorMode}/>
         <a className={route.name==='home'?'active':''} onClick={()=>setRoute({name:'home'})}>首页</a>
         <a className={route.name==='minesweeper'?'active':''} onClick={()=>setRoute({name:'minesweeper'})}>扫雷</a>
         <a className={route.name==='archive'?'active':''} onClick={()=>setRoute({name:'archive'})}>归档</a>

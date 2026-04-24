@@ -264,21 +264,11 @@ function Post({posts, site, post, setRoute, showToc, collections}){
   const sections = post.sections || [];
   const body = post.body || [];
 
+  const hasToc = showToc && sections.length > 1;
+
   return (
     <main className="page">
-      {showToc && sections.length > 1 && (
-        <nav className="toc">
-          <h5>目录 · {post.num}</h5>
-          {sections.map(s=>(
-            <a key={s.id} className={activeSec===s.id?'active':''}
-               onClick={()=>{document.getElementById(s.id)?.scrollIntoView({behavior:'smooth', block:'start'});}}>
-              {s.h}
-            </a>
-          ))}
-          <div className="prog">阅读进度 · {progress}%</div>
-        </nav>
-      )}
-
+      <div className={hasToc ? 'post-wrap with-toc' : 'post-wrap'}>
       <article className="article">
         <a className="backlink" onClick={()=>setRoute({name:'home'})}>← 回到首页</a>
 
@@ -337,6 +327,19 @@ function Post({posts, site, post, setRoute, showToc, collections}){
           ) : <div/>}
         </div>
       </article>
+      {hasToc && (
+        <nav className="toc">
+          <h5>目录 · {post.num}</h5>
+          {sections.map(s=>(
+            <a key={s.id} className={activeSec===s.id?'active':''}
+               onClick={()=>{document.getElementById(s.id)?.scrollIntoView({behavior:'smooth', block:'start'});}}>
+              {s.h}
+            </a>
+          ))}
+          <div className="prog">阅读进度 · {progress}%</div>
+        </nav>
+      )}
+      </div>
     </main>
   );
 }

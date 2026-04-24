@@ -28,7 +28,14 @@ function App(){
   const [loadError, setLoadError] = useState(null);
 
   const [route, setRoute] = useState(parseHashRoute);
-  const [tweaks, setTweaks] = useState(window.__TWEAKS__);
+  const [tweaks, setTweaks] = useState(() => {
+    // 初始 tweaks.theme 与 inline 脚本决定的主题对齐，避免首帧不一致
+    const t = { ...window.__TWEAKS__ };
+    if (window.__INITIAL_THEME__) t.theme = window.__INITIAL_THEME__;
+    return t;
+  });
+  // null = 跟随系统；'light'/'dark' = 用户显式选择，已持久化
+  const [colorMode, setColorMode] = useState(() => window.__COLOR_MODE__ || null);
   const [panelOpen, setPanelOpen] = useState(false);
   const [editMode, setEditMode] = useState(false);
 
@@ -96,6 +103,35 @@ function App(){
     document.body.style.fontSize = (DENSITY_PX[tweaks.density] || 17) + 'px';
   }, [tweaks]);
 
+  // 白天/夜间模式 → 驱动 tweaks.theme；未显式选择时跟随系统并实时响应
+  useEffect(()=>{
+    if (colorMode === 'light'){
+      setTweaks(t => t.theme === 'paper' ? t : {...t, theme: 'paper'});
+      return;
+    }
+    if (colorMode === 'dark'){
+      setTweaks(t => t.theme === 'charcoal' ? t : {...t, theme: 'charcoal'});
+      return;
+    }
+    const mq = window.matchMedia('(prefers-color-scheme: dark)');
+    const apply = (e) => {
+      const want = e.matches ? 'charcoal' : 'paper';
+      setTweaks(t => t.theme === want ? t : {...t, theme: want});
+    };
+    apply(mq);
+    mq.addEventListener('change', apply);
+    return () => mq.removeEventListener('change', apply);
+  }, [colorMode]);
+
+  const toggleColorMode = () => {
+    const isDark = tweaks.theme === 'charcoal' || tweaks.theme === 'terminal';
+    const next = isDark ? 'light' : 'dark';
+    try { localStorage.setItem('color-mode', next); } catch(e){}
+    document.body.classList.add('theme-transition');
+    setTimeout(() => document.body.classList.remove('theme-transition'), 450);
+    setColorMode(next);
+  };
+
   // 编辑模式握手
   useEffect(()=>{
     const h = (e)=>{
@@ -134,7 +170,8 @@ function App(){
 
   return (
     <>
-      <TopBar route={route} setRoute={setRoute} editMode={editMode} togglePanel={()=>setPanelOpen(o=>!o)} />
+      <TopBar route={route} setRoute={setRoute} editMode={editMode} togglePanel={()=>setPanelOpen(o=>!o)}
+              theme={tweaks.theme} toggleColorMode={toggleColorMode} />
       {route.name === 'home'        && <Home posts={posts} site={site} content={home} setRoute={setRoute} collections={collections} />}
       {route.name === 'post'        && <Post posts={posts} site={site} post={postCache[route.id]} setRoute={setRoute} showToc={tweaks.showToc} collections={collections} />}
       {route.name === 'archive'     && <Archive posts={posts} content={archivePage} setRoute={setRoute} collections={collections} />}

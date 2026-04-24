@@ -22,21 +22,6 @@ python serve.py 3000   # 自定义端口
 
 仓库已经配置好 GitHub Actions 自动部署工作流（见 `.github/workflows/pages.yml`）。
 
-### 首次启用
-
-工作流里的 `configure-pages` 已开启 `enablement: true`，首次推送到 `main` 会自动为仓库启用 GitHub Pages，无需手动到 Settings 里操作。
-
-若仓库禁止了 Actions 自动启用 Pages，则退回手动方式：**Settings → Pages → Build and deployment → Source → GitHub Actions**，然后重跑工作流。
-
-### 日常发布
-
-推送到 `main` 分支即自动发布。工作流会把整个仓库当作静态产物上传到 Pages。
-
-### 访问地址
-
-- 默认：`https://<你的账号>.github.io/KZBlog/`
-- 自定义域名：在仓库根目录新建 `CNAME` 文件，内容为你的域名（如 `blog.example.com`），然后在 Pages 设置里同步绑定域名
-
 ### 为什么无需改动代码
 
 - 所有 `fetch` 路径是相对路径（`./archive/...`），在子路径下也能正确解析
