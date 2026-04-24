@@ -7,7 +7,8 @@
 
 function parseHashRoute(){
   const h = location.hash.replace(/^#\/?/, '');
-  if (h.startsWith('post/')) return { name:'post', id: h.slice(5) };
+  if (h.startsWith('post/'))       return { name:'post', id: h.slice(5) };
+  if (h.startsWith('collection/')) return { name:'collection', id: h.slice(11) };
   if (h === 'archive')     return { name:'archive' };
   if (h === 'about')       return { name:'about' };
   if (h === 'minesweeper') return { name:'minesweeper' };
@@ -59,6 +60,7 @@ function App(){
             featured: !!p.featured, pinned: !!p.pinned,
             collection: p.collection || null,
             collection_n: p.collection_n || null,
+            home_visible: !!p.home_visible,
           })),
         });
       } catch (e){
@@ -70,6 +72,7 @@ function App(){
   // URL 同步 + 回到页首
   useEffect(()=>{
     const hash = route.name === 'post' ? `#/post/${route.id}`
+               : route.name === 'collection' ? `#/collection/${route.id}`
                : route.name === 'home' ? '#/'
                : `#/${route.name}`;
     history.replaceState(null, '', hash);
@@ -135,6 +138,7 @@ function App(){
       {route.name === 'home'        && <Home posts={posts} site={site} content={home} setRoute={setRoute} collections={collections} />}
       {route.name === 'post'        && <Post posts={posts} site={site} post={postCache[route.id]} setRoute={setRoute} showToc={tweaks.showToc} collections={collections} />}
       {route.name === 'archive'     && <Archive posts={posts} content={archivePage} setRoute={setRoute} collections={collections} />}
+      {route.name === 'collection'  && <Collection posts={posts} collections={collections} collectionId={route.id} setRoute={setRoute} />}
       {route.name === 'about'       && <About content={aboutPage} />}
       {route.name === 'minesweeper' && <Minesweeper setRoute={setRoute} />}
       <PageFoot site={site} setRoute={setRoute} />

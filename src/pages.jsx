@@ -32,6 +32,8 @@ function Home({posts, site, content, setRoute, collections}){
       const p = posts[i];
       if (active !== '全部' && !p.tags.includes(active)) continue;
       if (activeCollection && p.collection !== activeCollection) continue;
+      // 合集文章默认不进首页列表；显式 home_visible 或激活合集筛选时才露出
+      if (!activeCollection && p.collection && !p.home_visible) continue;
       if (qLower && !searchIndex[i].includes(qLower)) continue;
       out.push(p);
     }
@@ -90,6 +92,20 @@ function Home({posts, site, content, setRoute, collections}){
             <div className="meta">{content.upcoming.meta}</div>
           </div>
         </section>
+
+        {collections && collections.length > 0 && (
+          <section className="collections-strip">
+            {collections.map(c => (
+              <div key={c.id} className="collection-card"
+                   onClick={()=>setRoute({name:'collection', id: c.id})}>
+                <div className="kicker">合集 · {collectionCount.get(c.id) || 0} 篇</div>
+                <h3>{c.title}</h3>
+                {c.desc && <p>{c.desc}</p>}
+                <div className="go">查看合集 →</div>
+              </div>
+            ))}
+          </section>
+        )}
 
         <div className="index-grid">
           <aside className="side">
@@ -321,6 +337,66 @@ function Post({posts, site, post, setRoute, showToc, collections}){
           ) : <div/>}
         </div>
       </article>
+    </main>
+  );
+}
+
+function Collection({posts, collections, collectionId, setRoute}){
+  const collection = useMemo(
+    () => (collections || []).find(c => c.id === collectionId),
+    [collections, collectionId]
+  );
+
+  const items = useMemo(() => {
+    const list = posts.filter(p => p.collection === collectionId);
+    list.sort((a, b) => {
+      const an = a.collection_n ?? Infinity;
+      const bn = b.collection_n ?? Infinity;
+      if (an !== bn) return an - bn;
+      return a.date.localeCompare(b.date);
+    });
+    return list;
+  }, [posts, collectionId]);
+
+  if (!collection){
+    return (
+      <main className="page">
+        <header style={{padding:'40px 0 24px'}}>
+          <div style={{fontFamily:'var(--mono)', fontSize:12, color:'var(--ink-faint)', letterSpacing:'.2em', textTransform:'uppercase', marginBottom:10}}>/collection</div>
+          <h1 style={{margin:0, fontFamily:'var(--title-font)', fontWeight:500, fontSize:40, letterSpacing:'-0.02em'}}>合集不存在</h1>
+          <p style={{color:'var(--ink-soft)', marginTop:10, fontSize:15}}>
+            找不到 ID 为 <code>{collectionId}</code> 的合集。
+            <a style={{marginLeft:8, color:'var(--accent)', cursor:'pointer'}} onClick={()=>setRoute({name:'archive'})}>返回归档 →</a>
+          </p>
+        </header>
+      </main>
+    );
+  }
+
+  return (
+    <main className="page">
+      <header style={{padding:'40px 0 24px', borderBottom:'1px solid var(--rule)'}}>
+        <div style={{fontFamily:'var(--mono)', fontSize:12, color:'var(--ink-faint)', letterSpacing:'.2em', textTransform:'uppercase', marginBottom:10}}>/collection · {collection.id}</div>
+        <h1 style={{margin:0, fontFamily:'var(--title-font)', fontWeight:500, fontSize:48, letterSpacing:'-0.02em'}}>{collection.title}</h1>
+        <p style={{color:'var(--ink-soft)', marginTop:10, fontSize:16}}>
+          {collection.desc ? collection.desc + ' · ' : ''}共 {items.length} 篇
+        </p>
+      </header>
+
+      <section>
+        {items.map(p => (
+          <div key={p.id} className="archive-row" onClick={()=>setRoute({name:'post', id: p.id})}>
+            <div className="ar-date" style={{fontVariantNumeric:'tabular-nums'}}>№ {p.num}</div>
+            <div className="ar-title">{p.title}</div>
+            <div className="ar-tags">{(p.tags || []).join(' / ')}</div>
+          </div>
+        ))}
+        {items.length === 0 && (
+          <div style={{padding:'60px 0', textAlign:'center', color:'var(--ink-faint)', fontFamily:'var(--mono)', fontSize:13}}>
+            这个合集还没有文章。
+          </div>
+        )}
+      </section>
     </main>
   );
 }
