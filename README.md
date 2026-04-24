@@ -10,7 +10,7 @@ python serve.py        # 默认端口 8000
 python serve.py 3000   # 自定义端口
 ```
 
-然后浏览 <http://127.0.0.1:8000/>。由于 `fetch` 会在 `file://` 下触发 CORS 错误，**不能**直接双击 `index.html` 打开。
+然后浏览 <localhost:8000>。由于 `fetch` 会在 `file://` 下触发 CORS 错误，**不能**直接双击 `index.html` 打开。
 
 ## 添加文章
 
