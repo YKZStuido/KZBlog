@@ -10,7 +10,7 @@
       "line2": "把学会的事讲给大家听"
     },
     "signature": "— 亚柯洲，写于家里的小书桌。",
-    "footer": "© 2025–2026 亚柯洲 · CC BY-NC 4.0",
+    "footer": "© 2026 亚柯洲 · CC BY-NC 4.0",
     "stats": [
       { "label": "Articles", "kind": "postCount" },
       { "label": "Topics", "kind": "tagCount" },
@@ -64,14 +64,15 @@
   ],
   "collections": [
     {
-      "id": "oneplus",
-      "title": "一加玩机系列",
-      "desc": "一加手机刷机、Root、系统修改全攻略"
-    },
-    {
       "id": "cpp-zero",
       "title": "C++ 零基础教程",
       "desc": "从零开始学 C++，从环境搭建到语言核心概念"
+    },
+    {
+      "id": "oneplus",
+      "title": "一加玩机系列",
+      "desc": "一加手机刷机、Root、系统修改全攻略"
     }
+    
   ]
 }

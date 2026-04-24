@@ -32,10 +32,14 @@
     --maxw: 1240px;
     --colw: 680px;
     --density: 1;
+    --ms-board: #DEDAD2;
+    --ms-cell-up: #C2BFB6;
+    --ms-cell-open: #E8E5DC;
   }
   html, body { background: var(--bg); color: var(--ink); }
   body{
     margin:0;
+    min-height: 100vh;
     font-family: var(--body-font);
     font-size: 17px;
     line-height: 1.65;
@@ -51,9 +55,12 @@
   body[data-theme="charcoal"]{
     --bg:#111311; --bg-alt:#1A1C19; --ink:#EDEBE3; --ink-soft:#B8B6AE; --ink-faint:#6F716B;
     --rule:#EDEBE30F; --rule-strong:#EDEBE31F;
-    --accent: oklch(75% 0.16 85);
+    --accent: oklch(72% 0.20 145);
     --accent-ink:#111311;
-    --hl: oklch(35% 0.10 85);
+    --hl: oklch(30% 0.12 145);
+    --ms-board: #0A0C0A;
+    --ms-cell-up: #3C4039;
+    --ms-cell-open: #181B17;
   }
   /* theme: terminal */
   body[data-theme="terminal"]{
@@ -64,6 +71,9 @@
     --hl: oklch(40% 0.12 140);
     --body-font: var(--mono);
     --title-font: var(--mono);
+    --ms-board: #060906;
+    --ms-cell-up: #1A2B1A;
+    --ms-cell-open: #0E130E;
   }
   /* theme: journal (warm cream) */
   body[data-theme="journal"]{
@@ -72,6 +82,9 @@
     --accent: oklch(55% 0.15 25);
     --accent-ink:#F4EEE0;
     --hl: oklch(88% 0.09 80);
+    --ms-board: #D4C9B0;
+    --ms-cell-up: #BDB29A;
+    --ms-cell-open: #E4DAC4;
   }
 
   .mono{ font-family: var(--mono); }

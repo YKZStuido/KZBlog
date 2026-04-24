@@ -67,7 +67,7 @@ function PageFoot({site, setRoute}){
 
 const TWEAK_THEMES = [
   { id:'paper',    label:'纸张', bg:'#FAFAF7', ink:'#111311', accent:'oklch(62% 0.18 245)' },
-  { id:'charcoal', label:'深色', bg:'#111311', ink:'#EDEBE3', accent:'oklch(75% 0.16 85)' },
+  { id:'charcoal', label:'深色', bg:'#111311', ink:'#EDEBE3', accent:'oklch(72% 0.20 145)' },
   { id:'terminal', label:'终端', bg:'#0C0F0C', ink:'#CFE8CF', accent:'oklch(82% 0.17 140)' },
   { id:'journal',  label:'期刊', bg:'#F4EEE0', ink:'#2A1F14', accent:'oklch(55% 0.15 25)' },
 ];

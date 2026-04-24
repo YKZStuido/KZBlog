@@ -6,7 +6,7 @@ const MS_LEVELS = {
   hard:   { rows: 16, cols: 30, mines: 99, label: '困难' },
 };
 const MS_STATS_KEY = 'blog.minesweeper.stats.v1';
-const MS_NUM_COLORS = ['#2563eb','#16a34a','#dc2626','#7c3aed','#b45309','#0891b2','#111','#6b7280'];
+const MS_NUM_COLORS = ['#2563eb','#16a34a','#dc2626','#7c3aed','#b45309','#0891b2',null,'#6b7280'];
 
 function msMakeBoard(rows, cols){
   const b = new Array(rows);
@@ -243,15 +243,15 @@ function Minesweeper({setRoute}){
           <div style={{
             display:'inline-block', padding:8,
             border:'1px solid var(--rule-strong)', borderRadius:4,
-            background:'var(--paper, #f5f2ec)',
+            background:'var(--ms-board)',
           }}>
             {board.map((row, r) => (
               <div key={r} style={{display:'flex'}}>
                 {row.map((cell, c) => {
                   const open = cell.open;
                   const bg = open
-                    ? (cell.exploded ? '#fecaca' : 'var(--bg)')
-                    : 'var(--rule)';
+                    ? (cell.exploded ? '#fecaca' : 'var(--ms-cell-open)')
+                    : 'var(--ms-cell-up)';
                   let content = '';
                   if (cell.open){
                     if (cell.mine) content = '💣';
@@ -273,7 +273,7 @@ function Minesweeper({setRoute}){
                         marginLeft: c===0 ? 0 : -1,
                         marginTop: r===0 ? 0 : -1,
                         background: bg,
-                        color: (cell.open && cell.n>0) ? MS_NUM_COLORS[cell.n-1] : 'var(--ink)',
+                        color: (cell.open && cell.n>0) ? (MS_NUM_COLORS[cell.n-1] ?? 'var(--ink)') : 'var(--ink)',
                         cursor: status==='won'||status==='lost' ? 'default' : 'pointer',
                         userSelect:'none',
                       }}>

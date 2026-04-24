@@ -4,6 +4,7 @@
 
 ## 本地开发
 
+克隆代码，然后执行：
 ```bash
 python serve.py        # 默认端口 8000
 python serve.py 3000   # 自定义端口
@@ -20,7 +21,7 @@ python serve.py 3000   # 自定义端口
 
 ## 部署到 GitHub Pages
 
-仓库已经配置好 GitHub Actions 自动部署工作流（见 `.github/workflows/pages.yml`）。
+仓库已经配置好 GitHub Actions 自动部署工作流（见 `.github/workflows/pages.yml`），地址：https://ykzstuido.github.io/KZBlog。
 
 ### 为什么无需改动代码
 
