@@ -6,7 +6,6 @@ const MS_LEVELS = {
   hard:   { rows: 16, cols: 30, mines: 99, label: '困难' },
 };
 const MS_STATS_KEY = 'blog.minesweeper.stats.v1';
-const MS_NUM_COLORS = ['#2563eb','#16a34a','#dc2626','#7c3aed','#b45309','#0891b2',null,'#6b7280'];
 
 function msMakeBoard(rows, cols){
   const b = new Array(rows);
@@ -206,7 +205,7 @@ function Minesweeper({setRoute}){
       <article className="article" style={{maxWidth: 'none'}}>
         <a className="backlink" onClick={()=>setRoute({name:'home'})}>← 回到首页</a>
         <h1 style={{marginTop:8}}>扫雷</h1>
-        <div className="lede">左键翻开，右键插旗。第一次点击必定安全。</div>
+        <div className="lede">左键翻开，右键插旗。第一次点击必定安全！</div>
 
         <div style={{
           display:'flex', gap:12, alignItems:'center', flexWrap:'wrap',
@@ -241,48 +240,45 @@ function Minesweeper({setRoute}){
 
         <div style={{maxWidth:'100%', overflowX:'auto', WebkitOverflowScrolling:'touch'}}>
           <div style={{
-            display:'inline-block', padding:8,
-            border:'1px solid var(--rule-strong)', borderRadius:4,
+            display:'inline-block', padding:6,
+            border:'1px solid var(--rule-strong)', borderRadius:5,
             background:'var(--ms-board)',
+            boxShadow:'0 2px 12px rgba(0,0,0,.10)',
           }}>
-            {board.map((row, r) => (
-              <div key={r} style={{display:'flex'}}>
-                {row.map((cell, c) => {
-                  const open = cell.open;
-                  const bg = open
-                    ? (cell.exploded ? '#fecaca' : 'var(--ms-cell-open)')
-                    : 'var(--ms-cell-up)';
-                  let content = '';
-                  if (cell.open){
-                    if (cell.mine) content = '💣';
-                    else if (cell.n > 0) content = cell.n;
-                  } else if (cell.flag){
-                    content = '🚩';
-                  }
-                  return (
-                    <div key={c}
-                      className={'ms-cell' + (cell.open ? ' open' : '')}
-                      onClick={()=>onOpen(r,c)}
-                      onContextMenu={(e)=>onFlag(e,r,c)}
-                      style={{
-                        width: cellSize, height: cellSize,
-                        display:'flex', alignItems:'center', justifyContent:'center',
-                        fontFamily:'var(--mono)', fontWeight:700,
-                        fontSize: level==='hard' ? 13 : 14,
-                        border:'1px solid var(--rule-strong)',
-                        marginLeft: c===0 ? 0 : -1,
-                        marginTop: r===0 ? 0 : -1,
-                        background: bg,
-                        color: (cell.open && cell.n>0) ? (MS_NUM_COLORS[cell.n-1] ?? 'var(--ink)') : 'var(--ink)',
-                        cursor: status==='won'||status==='lost' ? 'default' : 'pointer',
-                        userSelect:'none',
-                      }}>
-                      {content}
-                    </div>
-                  );
-                })}
-              </div>
-            ))}
+            <div className="ms-board-inner">
+              {board.map((row, r) => (
+                <div key={r} className="ms-row">
+                  {row.map((cell, c) => {
+                    const cls = ['ms-cell'];
+                    if (cell.open) {
+                      cls.push('open');
+                      if (cell.exploded) cls.push('exploded');
+                      if (!cell.mine && cell.n > 0) cls.push(`ms-n${cell.n}`);
+                    }
+                    let content = '';
+                    if (cell.open) {
+                      if (cell.mine) content = cell.exploded ? '💥' : '💣';
+                      else if (cell.n > 0) content = cell.n;
+                    } else if (cell.flag) {
+                      content = '🚩';
+                    }
+                    return (
+                      <div key={c}
+                        className={cls.join(' ')}
+                        onClick={()=>onOpen(r,c)}
+                        onContextMenu={(e)=>onFlag(e,r,c)}
+                        style={{
+                          width: cellSize, height: cellSize,
+                          fontSize: level==='hard' ? 13 : 14,
+                          cursor: status==='won'||status==='lost' ? 'default' : 'pointer',
+                        }}>
+                        {content}
+                      </div>
+                    );
+                  })}
+                </div>
+              ))}
+            </div>
           </div>
         </div>
 
@@ -363,7 +359,7 @@ function Minesweeper({setRoute}){
             </tbody>
           </table>
           <div style={{marginTop:10, fontFamily:'var(--mono)', fontSize:11, color:'var(--ink-faint)'}}>
-            提示：数据保存在浏览器本地 (localStorage) · 清除浏览器数据会一并清掉
+            提示：数据保存在浏览器本地的localStorage，清除浏览器数据会一并清掉
           </div>
         </section>
       </article>

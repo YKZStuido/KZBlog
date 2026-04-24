@@ -59,7 +59,7 @@ function PageFoot({site, setRoute}){
         <a onClick={()=>setRoute({name:'home'})}>home</a>
         <a onClick={()=>setRoute({name:'archive'})}>archive</a>
         <a onClick={()=>setRoute({name:'about'})}>about</a>
-        <a>github</a>
+        <a serf="https://github.com/YKZStuido">github</a>
       </div>
     </footer>
   );
