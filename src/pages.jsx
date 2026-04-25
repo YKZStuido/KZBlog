@@ -308,10 +308,6 @@ function Post({posts, site, post, setRoute, showToc, collections}){
         {post.lede && <p className="lede"><Inline text={post.lede}/></p>}
         {body.map((b,i)=>renderBlock(b, i))}
 
-        <div className="article-end">
-          <div className="sign">{site.signature}</div>
-        </div>
-
         <div className="next-prev">
           {prev ? (
             <div className="np" onClick={()=>setRoute({name:'post', id: prev.id})}>

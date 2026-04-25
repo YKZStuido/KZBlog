@@ -1,7 +1,7 @@
 {
   "site": {
     "brand": "亚の博客",
-    "brandLong": "亚の博客 · Ya.blog · est. 2025",
+    "brandLong": "亚の博客 · YA.Blog · EST. 2026",
     "author": "亚柯洲",
     "grade": "七年级",
     "lastUpdate": "2026-04-12",
@@ -9,13 +9,12 @@
       "lead": "写代码、刷机、",
       "line2": "把学会的事讲给大家听"
     },
-    "signature": "— 亚柯洲，写于家里的小书桌。",
     "footer": "© 2026 亚柯洲 · CC BY-NC 4.0",
     "stats": [
-      { "label": "Articles", "kind": "postCount" },
-      { "label": "Topics", "kind": "tagCount" },
-      { "label": "Read Time", "kind": "readMinutes" },
-      { "label": "Bugs Fixed", "value": "∞" }
+      { "label": "文章", "kind": "postCount" },
+      { "label": "话题", "kind": "tagCount" },
+      { "label": "阅读时间", "kind": "readMinutes" },
+      { "label": "Bug 修复", "value": "∞" }
     ]
   },
   "home": {

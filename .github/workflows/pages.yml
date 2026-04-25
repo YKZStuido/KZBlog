@@ -1,4 +1,4 @@
-name: Deploy to GitHub Pages
+name: 部署到 GitHub Pages
 
 on:
   push:
